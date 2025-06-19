@@ -146,6 +146,8 @@ Metrics/CollectionLiteralLength: # new in 1.47
   Enabled: true
 Naming/BlockForwarding: # new in 1.24
   Enabled: true
+Naming/VariableNumber:
+  Enabled: false
 Security/CompoundHash: # new in 1.28
   Enabled: true
 Security/IoMethods: # new in 1.22
