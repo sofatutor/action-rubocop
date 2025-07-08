@@ -28,8 +28,15 @@ With `reporter: github-pr-review` a comment is added to the Pull Request Convers
 
 <!-- Please maintain inputs in alphabetical order -->
 
+### `fail_level`
+
+Optional. If set to `none`, always use exit code 0 for reviewdog. Otherwise, exit code 1 for reviewdog if it finds at least 1 issue with severity greater than or equal to the given level.
+Possible values: [`none`, `any`, `info`, `warning`, `error`]
+Default is `none`.
+
 ### `fail_on_error`
 
+Deprecated, use `fail_level` instead.
 Optional. Exit code for reviewdog when errors are found [`true`, `false`].
 Default is `false`.
 
@@ -138,12 +145,12 @@ jobs:
     env:
       BUNDLE_ONLY: rubocop
     steps:
-      - uses: actions/checkout@v4
-      - uses: ruby/setup-ruby@v1
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: ruby/setup-ruby@1a615958ad9d422dd932dc1d5823942ee002799f # v1.227.0
         with:
           ruby-version: '3.3'
           bundler-cache: true
-      - uses: reviewdog/action-rubocop@v2
+      - uses: reviewdog/action-rubocop@fcb74ba274da10b18d038d0bcddaae3518739634 # v2.21.2
         with:
           reporter: github-pr-review # Default is github-pr-check
           skip_install: true
