@@ -2,24 +2,6 @@ AllCops:
   Exclude:
     - 'test/rdjson_formatter/**/*'
     - 'vendor/**/*'
-Lint/DuplicateSetElement: # new in 1.67
-  Enabled: true
-Lint/UnescapedBracketInRegexp: # new in 1.68
-  Enabled: true
-Lint/UselessNumericOperation: # new in 1.66
-  Enabled: true
-Style/AmbiguousEndlessMethodDefinition: # new in 1.68
-  Enabled: true
-Style/BitwisePredicate: # new in 1.68
-  Enabled: true
-Style/CombinableDefined: # new in 1.68
-  Enabled: true
-Style/KeywordArgumentsMerging: # new in 1.68
-  Enabled: true
-Style/RedundantInterpolationUnfreeze: # new in 1.66
-  Enabled: true
-Style/SafeNavigationChainLength: # new in 1.68
-  Enabled: true
 Gemspec/AddRuntimeDependency: # new in 1.65
   Enabled: true
 Gemspec/DeprecatedAttributeAssignment: # new in 1.30
