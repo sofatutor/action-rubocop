@@ -64,6 +64,16 @@ inputs:
 runs:
   using: 'composite'
   steps:
+    - name: Get current hour for cache key
+      id: get-hour
+      run: echo "hour=$(date +'%Y%m%d%H')" >> $GITHUB_OUTPUT
+      shell: bash
+    - name: Cache RuboCop configuration
+      uses: actions/cache@v4
+      with:
+        path: |
+          .rubocop-https---*
+        key: rubocop-remote-config-${{ runner.os }}-${{ hashFiles('**/.rubocop*.yml') }}-${{ steps.get-hour.outputs.hour }}
     - run: $GITHUB_ACTION_PATH/script.sh
       shell: sh
       env:
