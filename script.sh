@@ -120,8 +120,15 @@ if [ "${INPUT_ONLY_CHANGED}" = "true" ]; then
   printf '%s\n' "${CHANGED_FILES[@]}"
 
   if (( ${#CHANGED_FILES[@]} > 100 )); then
-    echo "More than 100 changed files (${#CHANGED_FILES[@]}), running rubocop on all files"
-    unset CHANGED_FILES
+    echo "More than 100 changed files (${#CHANGED_FILES[@]}), running rubocop on all files tracked by git"
+    # Only tracked files: an untracked vendor/bundle can hold gems whose own
+    # .rubocop.yml requires extensions that are not installed.
+    # shellcheck disable=SC2086
+    readarray -t CHANGED_FILES < <(
+      comm -12 \
+        <(git ls-files | sort || kill $$) \
+        <(${BUNDLE_EXEC}rubocop --list-target-files | sort || kill $$)
+    )
   fi
 
   echo '::endgroup::'
