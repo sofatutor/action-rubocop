@@ -91,6 +91,13 @@ fi
 if [ "${INPUT_ONLY_CHANGED}" = "true" ]; then
   echo '::group:: Getting changed files list'
 
+  # pull_request.base.sha can be far behind the base branch, while HEAD_REF is the
+  # test merge commit on top of its current tip. Diff against that tip (the first
+  # parent) so commits merged to the base branch meanwhile are not counted.
+  if [ "${GITHUB_EVENT_NAME}" = "pull_request" ]; then
+    BASE_REF=$(git cat-file -p "${HEAD_REF}" | awk '/^parent /{ print $2; exit }')
+  fi
+
   # check if commit is present in repository, otherwise fetch it
   if ! git cat-file -e "${BASE_REF}"; then
     git fetch --depth 1 origin "${BASE_REF}"
