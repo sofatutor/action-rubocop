@@ -68,8 +68,33 @@ jobs:
           touch a{00..100}.rb
           git add *
           git commit -m auto
+          mkdir -p vendor/bundle && touch vendor/bundle/untracked.rb
 
           export PATH=test/only_changed/too_many_relevant/mock_bins:test/only_changed/shared_mock_bins:$PATH
           BASE_REF=$(git rev-parse HEAD~) HEAD_REF=$(git rev-parse HEAD) ./script.sh
+
+          [ -f test/only_changed/reviewdog-was-called ]
+          rm -rf vendor
+      - name: Check when the base branch moved on since base.sha
+        run: |
+          git checkout ${{ github.sha }}
+          rm -f test/only_changed/reviewdog-was-called
+          OLD_BASE=$(git rev-parse HEAD)
+
+          git checkout -b base-moved-on
+          touch b.rb
+          git add b.rb
+          git commit -m "merged to base meanwhile"
+
+          git checkout -b pr-branch "${OLD_BASE}"
+          cp test/only_changed/few_relevant/files/a.rb .
+          git add a.rb
+          git commit -m auto
+
+          git checkout base-moved-on
+          git merge --no-ff --no-edit pr-branch
+
+          export PATH=test/only_changed/few_relevant/mock_bins:test/only_changed/shared_mock_bins:$PATH
+          GITHUB_EVENT_NAME=pull_request BASE_REF="${OLD_BASE}" HEAD_REF=$(git rev-parse HEAD) ./script.sh
 
           [ -f test/only_changed/reviewdog-was-called ]
