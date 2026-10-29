@@ -1,16 +1,20 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-case ARGV
-when %w[
-  --list-target-files
-]
-  puts Dir['**/*.rb']
-when %W[
+flags = %W[
   --require #{ENV['GITHUB_ACTION_PATH']}/rdjson_formatter/rdjson_formatter.rb
   --format RdjsonFormatter
   --fail-level error
 ]
+
+if ARGV == %w[--list-target-files]
+  puts Dir['**/*.rb']
+elsif ARGV.first(flags.size) == flags
+  files = ARGV.drop(flags.size)
+  tracked = `git ls-files`.split("\n")
+  abort "rubocop mock got untracked files:\n#{(files - tracked).join("\n")}" unless (files - tracked).empty?
+  abort 'rubocop mock got no files' if files.empty?
+
   puts 'Mock message for reviewdog'
 else
   abort "rubocop mock called with unexpected arguments:\n#{ARGV.join("\n")}"
